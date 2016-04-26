@@ -1,7 +1,7 @@
 # Winston Workflows
 
 ```js
-var workflows = require('workflows');
+var workflows = require('winston-workflows');
 var logger = require('winston');
 
 var id = 0;
