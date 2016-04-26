@@ -1,4 +1,5 @@
 "use strict";
+var fmt = require('winston-format');
 // snapshot and copy over levels at time of creation
 function resetLevels(target, levels) {
   target.levels = levels;
@@ -55,7 +56,7 @@ exports.delegate = function createDelegate(logger, logfn, levels) {
     return logger.log.apply(logger, args);
   }
   child.log = function delegateLog() {
-    logfn(arguments, delegate);
+    logfn(Array.prototype.slice.call(arguments), delegate);
   }
   resetLevels(child, levels || child.levels);
   return child;
@@ -63,8 +64,18 @@ exports.delegate = function createDelegate(logger, logfn, levels) {
 exports.breadcrumb = function breadcrumb(logger, msg, key) {
   key = key || 'breadcrumbs';
   return exports.delegate(logger, function breadcrumbs(args, delegate) {
-    var meta = args[2][key];
-    if (!meta) meta = args[2][key] = [];
+    var end = args.length - 1;
+    if (args.length && typeof args[end] === 'function') {
+      end--;
+    }
+    var meta_index = fmt.indexOfMeta(args, end);
+    if (meta_index === -1) {
+      meta_index = args.push(Object.create(null)) - 1;
+    }
+    var meta = args[meta_index][key];
+    if (!meta) {
+      meta = args[meta_index][key] = [];
+    }
     meta.push(msg);
     delegate(args);
   })
