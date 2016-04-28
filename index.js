@@ -53,11 +53,16 @@ exports.delegate = function createDelegate(logger, logfn, levels) {
   var child = Object.create(logger);
   function delegate(args) {
     // DO NOT BIND, LOOK IT UP EVERY TIME
-    var meta_index = fmt.indexOfMeta(args, end);
-    return logger.log.apply(logger, args, meta_index);
+    return logger.log.apply(logger, args);
   }
   child.log = function delegateLog() {
-    logfn(Array.prototype.slice.call(arguments), delegate);
+    var args = Array.from(arguments);
+    var end = args.length - 1;
+    if (args.length && typeof args[end] === 'function') {
+      end--;
+    }
+    var meta_index = fmt.indexOfMeta(args, end);
+    logfn(args, delegate, meta_index);
   }
   resetLevels(child, levels || child.levels);
   return child;
@@ -65,10 +70,6 @@ exports.delegate = function createDelegate(logger, logfn, levels) {
 exports.breadcrumb = function breadcrumb(logger, msg, key) {
   key = key || 'breadcrumbs';
   return exports.delegate(logger, function breadcrumbs(args, delegate, meta_index) {
-    var end = args.length - 1;
-    if (args.length && typeof args[end] === 'function') {
-      end--;
-    }
     if (meta_index === -1) {
       meta_index = args.push(Object.create(null)) - 1;
     }
