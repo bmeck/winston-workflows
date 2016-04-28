@@ -1,6 +1,6 @@
 {
   "name": "winston-workflows",
-  "version": "1.1.0",
+  "version": "1.2.0",
   "description": "Some simple common utilities you would want for winston",
   "repository": "https://github.com/bmeck/winston-workflows",
   "scripts": {
