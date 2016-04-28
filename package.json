@@ -6,10 +6,20 @@
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
   },
-  "keywords": ["winston", "logging", "metadata", "child", "events", "tee"],
+  "keywords": [
+    "winston",
+    "logging",
+    "metadata",
+    "child",
+    "events",
+    "tee"
+  ],
   "author": "bradleymeck",
   "license": "MIT",
   "devDependencies": {
     "winston": "2.2.0"
+  },
+  "dependencies": {
+    "winston-format": "1.0.1"
   }
 }
