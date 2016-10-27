@@ -10,7 +10,7 @@ function resetLevels(target, levels) {
 };
 exports.logEvents = function logEvents(logger, ee, eventNames, options) {
   var $emit = ee.emit;
-  if (typeof $emit) {
+  if (typeof $emit !== 'function') {
     throw Error('Expected ee to have a .emit function');
   }
   options = options || {};
@@ -67,19 +67,16 @@ exports.delegate = function createDelegate(logger, logfn, levels) {
   resetLevels(child, levels || child.levels);
   return child;
 };
+var breadcrumb_id = 1;
 exports.breadcrumb = function breadcrumb(logger, msg, key) {
-  key = key || 'breadcrumbs';
+  key = key || 'breadcrumb';
   return exports.delegate(logger, function breadcrumbs(args, delegate, meta_index) {
     if (meta_index === -1) {
       meta_index = args.push(Object.create(null)) - 1;
     }
-    var meta = args[meta_index][key];
-    if (!meta) {
-      meta = args[meta_index][key] = [];
-    }
-    meta.push(msg);
+    args[meta_index][key] = msg;
     delegate(args);
-  })
+  });
 };
 // create a logger that is based upon `source` but also logs
 // everything to `tap`

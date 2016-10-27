@@ -5,7 +5,7 @@ var domain = require('domain');
 
   require('http').createServer((req,res)=> {
     var d = domain.create();
-    d.logger = workflow.breadcrumb(winston, `request=${id++}`);;
+    d.logger = workflow.breadcrumb(winston, `request=${id++}`);
     Object.freeze(d._events);
     d.run(() => {
       var logger = process.domain.logger;
